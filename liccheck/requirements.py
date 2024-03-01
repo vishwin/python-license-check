@@ -1,4 +1,5 @@
 import pkg_resources
+from packaging.markers import Marker
 
 try:
     from pip._internal.network.session import PipSession
@@ -24,7 +25,7 @@ def parse_requirements(requirement_file):
     requirements = []
     for req in pip_parse_requirements(requirement_file, session=PipSession()):
         install_req = install_req_from_parsed_requirement(req)
-        if install_req.markers and not pkg_resources.evaluate_marker(str(install_req.markers)):
+        if install_req.markers and not Marker(str(install_req.markers)).evaluate():
             # req should not installed due to env markers
             continue
         elif install_req.editable:
